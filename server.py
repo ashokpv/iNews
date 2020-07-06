@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import bcrypt
 from datetime import datetime
 from controllers import news_routes
+
 # Making a Connection with MongoClient
 client = MongoClient("mongodb://localhost:27017/")
 # database
@@ -67,12 +68,13 @@ def login():
                      test['password']) == test['password'] and test:
         access_token = create_access_token(identity=email)
         return jsonify(message="Login Succeeded!",
+                       username=test["first_name"],
                        access_token=access_token), 201
     else:
         return jsonify(message="Invalid Username or Password"), 401
 
 
-if __name__ == '__main__':
-    app.register_blueprint(news_routes.news_routes)
-    app.run(host="localhost", debug=True)
+app.register_blueprint(news_routes.news_routes)
 
+if __name__ == '__main__':
+    app.run(host="*", debug=True)
