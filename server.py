@@ -2,8 +2,12 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 import bcrypt
-from datetime import datetime
-from controllers import news_routes
+from datetime import datetime, date, timedelta
+import isodate as iso
+from bson import ObjectId
+from flask.json import JSONEncoder
+from werkzeug.routing import BaseConverter
+from controllers import news_routes, user_activities
 
 # Making a Connection with MongoClient
 client = MongoClient("mongodb://localhost:27017/")
@@ -16,6 +20,24 @@ jwt = JWTManager(app)
 
 # JWT Config
 app.config["JWT_SECRET_KEY"] = "JWTSECRETCHECK"
+
+
+class MongoJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, (datetime, date)):
+            return iso.datetime_isoformat(o)
+        if isinstance(o, ObjectId):
+            return str(o)
+        else:
+            return super().default(o)
+
+
+class ObjectIdConverter(BaseConverter):
+    def to_python(self, value):
+        return ObjectId(value)
+
+    def to_url(self, value):
+        return str(value)
 
 
 @app.route("/dashboard")
@@ -66,15 +88,21 @@ def login():
         {"email": email})
     if bcrypt.hashpw(password.encode('utf-8'),
                      test['password']) == test['password'] and test:
-        access_token = create_access_token(identity=email)
+        expires = timedelta(days=1)
+        access_token = create_access_token(identity=email,expires_delta=expires)
         return jsonify(message="Login Succeeded!",
                        username=test["first_name"],
+                       userid=test["_id"],
                        access_token=access_token), 201
     else:
         return jsonify(message="Invalid Username or Password"), 401
 
 
+app.json_encoder = MongoJSONEncoder
+app.url_map.converters['objectid'] = ObjectIdConverter
 app.register_blueprint(news_routes.news_routes)
+app.register_blueprint(user_activities.user_activity)
+
 
 if __name__ == '__main__':
     app.run(host="*", debug=True)
