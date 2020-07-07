@@ -5,7 +5,10 @@ from pymongo import MongoClient
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from static.metadata import Metadata
+import sys
+import os
+sys.path.append(os.path.abspath("/home/bharath/Desktop/iNews/static/"))
+from metadata import Metadata
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["iNews"]
@@ -32,7 +35,6 @@ def datetime_convert(date_string):
 
 def parse_economic_times(rss, collection, category=None):
     resp = requests.get(rss)
-
     tree = ET.ElementTree(ET.fromstring(resp.content))
     economic_times = list()
     root = tree.getroot()
@@ -49,7 +51,11 @@ def parse_economic_times(rss, collection, category=None):
             else:
                 final_dict[child.tag] = child.text
         economic_times.append(final_dict)
-    db[collection].insert_many(economic_times)
+
+    try:
+        db[collection].insert_many(economic_times)
+    except Exception as e:
+        print(str(e))
 
 
 def parse_indiatoday(feed_entries, collection, category=None):
@@ -64,7 +70,10 @@ def parse_indiatoday(feed_entries, collection, category=None):
         if category:
             data_feed["category"] = category
         indiatoday_news_list.append(data_feed)
-    db[collection].insert_many(indiatoday_news_list)
+    try:
+        db[collection].insert_many(indiatoday_news_list)
+    except Exception as e:
+        print(str(e))
 
 
 def parse_cnn(feed_entries, collection, category=None):
@@ -73,7 +82,7 @@ def parse_cnn(feed_entries, collection, category=None):
 
         data_feed = {"title": entry.title_detail.value,
                      "link": entry.link,
-                     "images":[],
+                     "images": [],
                      "source": "CNN"}
         try:
             data_feed["datetime"] = datetime_convert(entry.published)
@@ -93,9 +102,32 @@ def parse_cnn(feed_entries, collection, category=None):
             data_feed["category"] = category
         cnn_news_list.append(data_feed)
     if cnn_news_list:
-        db[collection].insert_many(cnn_news_list)
+        try:
+            db[collection].insert_many(cnn_news_list)
+        except Exception as e:
+            print(str(e))
     else:
         print("empty list in %s", category)
+
+
+def parse_ndtv(feed_entries, collection, category=None):
+    ndtv_news_list = []
+    for entry in feed_entries:
+        data_feed = {"title": entry.title_detail.value,
+                     "link": entry.link,
+                     "description": entry.summary,
+                     "images": [entry.storyimage],
+                     "datetime": datetime_convert(entry.published),
+                     "source": "Ndtv"}
+
+        if category:
+            data_feed["category"] = category
+        ndtv_news_list.append(data_feed)
+    if ndtv_news_list:
+        try:
+            db[collection].insert_many(ndtv_news_list)
+        except Exception as e:
+            print(str(e))
 
 
 def process_category_news():
@@ -116,6 +148,11 @@ def process_category_news():
                 feed_entries = feed.entries
                 parse_indiatoday(feed_entries, "news_articles",
                                  category=category)
+
+            elif source == "ndtv":
+                feed = feedparser.parse(rss_feed_link)
+                feed_entries = feed.entries
+                parse_ndtv(feed_entries, "news_articles", category=category)
 
 
 def process():

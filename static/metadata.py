@@ -15,7 +15,6 @@ class Metadata:
 
         "CNN": {"Money": "http://rss.cnn.com/rss/money_news_international.rss",
                 "Technology": "http://rss.cnn.com/rss/edition_technology.rss",
-                "Science & Space": "http://rss.cnn.com/rss/edition_space.rss",
                 "Entertainment": "http://rss.cnn.com/rss/edition_entertainment"
                                  ".rss",
                 "Sports": "http://rss.cnn.com/rss/edition_sport.rss",
@@ -23,6 +22,7 @@ class Metadata:
                                "http://rss.cnn.com/rss/edition_motorsport.rss",
                 "Travel": "http://rss.cnn.com/rss/edition_travel.rss",
                 "Latest": "http://rss.cnn.com/rss/cnn_latest.rss"},
+
         "Economic Times": {"stocks": "https://economictimes.indiatimes.com"
                                      "/markets/stocks/rssfeeds/2146842.cms",
                            "Technology": "https://economictimes.indiatimes.com"

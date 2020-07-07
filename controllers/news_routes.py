@@ -25,9 +25,9 @@ def fetch_headerlines():
 @news_routes.route("/fetch_newsarticles", methods=['GET'])
 @jwt_required
 def fetch_newsarticles():
-    category =  request.args.get("category")
+    category = request.args.get("category")
     news_articles = db["news_articles"].find({"category": category},
-                                              {'_id': False}).sort(
+                                             {'_id': False}).sort(
         'datetime',
         -1).limit(20)
     json_data, count = common_functions.collection_to_json(news_articles)
