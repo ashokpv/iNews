@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 import sys
 import os
-sys.path.append(os.path.abspath("/home/bharath/Desktop/iNews/static/"))
+sys.path.append(os.path.abspath("home/AzureUser/Desktop/iNews/static/"))
 from metadata import Metadata
 
 client = MongoClient("mongodb://localhost:27017/")
@@ -53,7 +53,7 @@ def parse_economic_times(rss, collection, category=None):
         economic_times.append(final_dict)
 
     try:
-        db[collection].insert_many(economic_times)
+        db[collection].insert_many(economic_times, ordered=False)
     except Exception as e:
         print(str(e))
 
@@ -71,7 +71,7 @@ def parse_indiatoday(feed_entries, collection, category=None):
             data_feed["category"] = category
         indiatoday_news_list.append(data_feed)
     try:
-        db[collection].insert_many(indiatoday_news_list)
+        db[collection].insert_many(indiatoday_news_list, ordered=False)
     except Exception as e:
         print(str(e))
 
@@ -103,7 +103,7 @@ def parse_cnn(feed_entries, collection, category=None):
         cnn_news_list.append(data_feed)
     if cnn_news_list:
         try:
-            db[collection].insert_many(cnn_news_list)
+            db[collection].insert_many(cnn_news_list, ordered=False)
         except Exception as e:
             print(str(e))
     else:
@@ -125,7 +125,7 @@ def parse_ndtv(feed_entries, collection, category=None):
         ndtv_news_list.append(data_feed)
     if ndtv_news_list:
         try:
-            db[collection].insert_many(ndtv_news_list)
+            db[collection].insert_many(ndtv_news_list, ordered=False)
         except Exception as e:
             print(str(e))
 

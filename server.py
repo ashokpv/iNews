@@ -84,8 +84,9 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-    test = user.find_one(
-        {"email": email})
+    test = user.find_one({"email": email})
+    if not test:
+        return jsonify(message="Invalid Username or Password"), 401
     if bcrypt.hashpw(password.encode('utf-8'),
                      test['password']) == test['password'] and test:
         expires = timedelta(days=1)

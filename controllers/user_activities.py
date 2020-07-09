@@ -18,11 +18,18 @@ user_activity = Blueprint('user_activity', __name__)
 def add_user_likes(user_id):
     if request.is_json:
         news_id = request.json["news_id"]
-        news_id = ObjectId(news_id)
-        likes_updated = db["user_activity"].update({"user_id": user_id},
-                                                   {"$addToSet": {"news_ids":
-                                                                      news_id
-                                                                  }}, True)
-        db["news_articles"].update({"_id": news_id}, {"$inc": {"Likes": 1}},
-                                   True)
+        category = request.json["category"]
+    else:
+        news_id = request.form["news_id"]
+        category = request.form["category"]
+    if not news_id:
+        return jsonify(data={"message": "Invalid news id"}), 400
+    news_id = ObjectId(news_id)
+    likes_updated = db["user_activity"].update({"user_id": user_id},
+                                               {"$addToSet": {
+                                                   "news_ids." + category:
+                                                       news_id
+                                               }}, True)
+    db["news_articles"].update({"_id": news_id}, {"$inc": {"Likes": 1}},
+                               True)
     return jsonify(data={"message": "Updated user likes."}), 200
