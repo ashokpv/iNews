@@ -31,5 +31,28 @@ class Metadata:
                                        "/small-biz/startups/rssfeeds/11993050.cms",
                            "Politics": "https://economictimes.indiatimes.com"
                                        "/news/politics-and-nation/rssfeeds/1052732854.cms",
-                           "Science & Space": "https://economictimes.indiatimes.com/news/science/rssfeeds/39872847.cms"}
+                           "Science & Space":
+                               "https://economictimes.indiatimes.com/news/science/rssfeeds/39872847.cms"},
+
+        "India TV": {"Lifestyle": "https://www.indiatvnews.com/rssnews"
+                                  "/topstory-lifestyle.xml",
+                     "Business": "https://www.indiatvnews.com/rssnews/topstory"
+                                 "-business.xml",
+                     "World": "https://www.indiatvnews.com/rssnews/topstory"
+                              "-world.xml",
+                     "Sports": "https://www.indiatvnews.com/rssnews/topstory"
+                               "-sports.xml",
+                     "Entertainment": "https://www.indiatvnews.com/rssnews"
+                                      "/topstory-entertainment.xml",
+                     "Politics": "https://www.indiatvnews.com/rssnews/topstory"
+                                 "-politics.xml"},
+        "Indian Express": {
+            "Entertainment": "https://www.newindianexpress.com/Entertainment/English/rssfeed/?id=194&getXmlFeed=true",
+            "Cricket": "https://www.newindianexpress.com/Sport/Cricket/rssfeed/?id=188&getXmlFeed=true",
+            "World": "https://www.newindianexpress.com/World/rssfeed/?id=171&getXmlFeed=true",
+            "Technology": "https://www.newindianexpress.com/Lifestyle/Tech"
+                          "/rssfeed/?id=212&getXmlFeed=true",
+            "Health & Food": "https://www.newindianexpress.com/Lifestyle/Health/rssfeed/?id"
+                             "=213&getXmlFeed=true",
+        }
     }

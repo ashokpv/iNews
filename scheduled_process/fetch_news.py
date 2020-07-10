@@ -4,17 +4,22 @@ from dateutil import parser as date_parser
 from pymongo import MongoClient
 import requests
 import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
+from bs4 import BeautifulSoup
 from datetime import datetime
 import sys
 import os
-sys.path.append(os.path.abspath("home/AzureUser/Desktop/iNews/static/"))
+sys.path.append(os.path.abspath("/home/AzureUser/iNews/static/"))
+
+# sys.path.append(os.path.abspath("/home/bharath/Desktop/iNews/static/"))
 from metadata import Metadata
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["iNews"]
 rss_feeds_headlines = ['https://www.indiatoday.in/rss/home',
                        'https://economictimes.indiatimes.com/rssfeedstopstories.cms',
-                       'http://rss.cnn.com/rss/edition.rss']
+                       'http://rss.cnn.com/rss/edition.rss',
+                       'https://www.indiatvnews.com/rssnews/topstory.xml']
 limit = 12 * 3600 * 1000
 categories = ["Money", "Technology", "space", "Entertainment", "sport",
               "Motorsport", "Travel", "latest"]
@@ -53,6 +58,8 @@ def parse_economic_times(rss, collection, category=None):
         economic_times.append(final_dict)
 
     try:
+        if not economic_times:
+            print("Empty data for ET category ", category)
         db[collection].insert_many(economic_times, ordered=False)
     except Exception as e:
         print(str(e))
@@ -71,6 +78,8 @@ def parse_indiatoday(feed_entries, collection, category=None):
             data_feed["category"] = category
         indiatoday_news_list.append(data_feed)
     try:
+        if not indiatoday_news_list:
+            print("Empty data for Indiatoday category ", category)
         db[collection].insert_many(indiatoday_news_list, ordered=False)
     except Exception as e:
         print(str(e))
@@ -107,7 +116,7 @@ def parse_cnn(feed_entries, collection, category=None):
         except Exception as e:
             print(str(e))
     else:
-        print("empty list in %s", category)
+        print("empty list CNN in %s", category)
 
 
 def parse_ndtv(feed_entries, collection, category=None):
@@ -128,18 +137,76 @@ def parse_ndtv(feed_entries, collection, category=None):
             db[collection].insert_many(ndtv_news_list, ordered=False)
         except Exception as e:
             print(str(e))
+    else:
+
+        print("Empty data for NDTV category ", category)
+
+
+def parse_indiatv(feed_entries, collection, category=None):
+    indiatv = []
+
+    for entry in feed_entries:
+        data_feed = {"title": entry.title_detail.value,
+                     "link": entry.link,
+                     "description": entry.summary,
+                     "images": get_images(entry.description),
+                     "datetime": datetime_convert(entry.published),
+                     "source": "India TV"}
+        if category:
+            data_feed["category"] = category
+        indiatv.append(data_feed)
+    if indiatv:
+        try:
+            db[collection].insert_many(indiatv, ordered=False)
+        except Exception as e:
+            print(str(e))
+
+
+def parse_indianexpress(rss, collection, category=None):
+    indianexpress = []
+    parser = HTMLParser()
+    resp = requests.get(rss, headers={
+        'User-Agent': 'My User Agent 1.0',
+    })
+    tree = ET.ElementTree(ET.fromstring(resp.content))
+    root = tree.getroot()
+    for item in root.findall('./channel/item'):
+        final_dict = {"source": "Indian Express",
+                      "images": [],
+                      "description": "",
+                      "Likes": 0}
+        for child in item:
+            if child.tag == 'pubDate':
+                final_dict["datetime"] = datetime_convert(child.text)
+            elif child.tag == 'image':
+                final_dict["images"].append(child.text)
+            elif child.tag == 'title':
+                final_dict["title"] = parser.unescape(child.text)
+            elif child.tag == 'story':
+                final_dict["description"] = BeautifulSoup(child.text,
+                                                          "html.parser").text
+            elif child.tag == 'link':
+                final_dict["link"] = child.text
+            if child.tag == 'tags':
+                final_dict["keywords"] = [child.text]
+        if category:
+            final_dict["category"] = category
+        indianexpress.append(final_dict)
+    if indianexpress:
+        try:
+            db[collection].insert_many(indianexpress, ordered=False)
+        except Exception as e:
+            print(str(e))
 
 
 def process_category_news():
     for source, value in Metadata.rss_feeds.items():
         for category, rss_feed_link in value.items():
-            print(category)
-            print(rss_feed_link)
             if 'economictimes' in rss_feed_link:
                 parse_economic_times(rss_feed_link, "news_articles",
                                      category=category)
 
-            if 'cnn' in rss_feed_link:
+            elif 'cnn' in rss_feed_link:
                 feed = feedparser.parse(rss_feed_link)
                 feed_entries = feed.entries
                 parse_cnn(feed_entries, "news_articles", category=category)
@@ -153,6 +220,14 @@ def process_category_news():
                 feed = feedparser.parse(rss_feed_link)
                 feed_entries = feed.entries
                 parse_ndtv(feed_entries, "news_articles", category=category)
+
+            elif source == 'India TV':
+                feed = feedparser.parse(rss_feed_link)
+                feed_entries = feed.entries
+                parse_indiatv(feed_entries, "news_articles", category=category)
+            elif source == 'Indian Express':
+                parse_indianexpress(rss_feed_link, "news_articles",
+                                    category=category)
 
 
 def process():
