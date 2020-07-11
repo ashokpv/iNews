@@ -18,8 +18,7 @@ class Metadata:
                 "Entertainment": "http://rss.cnn.com/rss/edition_entertainment"
                                  ".rss",
                 "Sports": "http://rss.cnn.com/rss/edition_sport.rss",
-                "Automobiles": "	"
-                               "http://rss.cnn.com/rss/edition_motorsport.rss",
+                "Automobiles": "http://rss.cnn.com/rss/edition_motorsport.rss",
                 "Travel": "http://rss.cnn.com/rss/edition_travel.rss",
                 "Latest": "http://rss.cnn.com/rss/cnn_latest.rss"},
 
