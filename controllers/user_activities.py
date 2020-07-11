@@ -6,9 +6,7 @@ from flask import request
 from bson import ObjectId
 
 client = MongoClient("mongodb://localhost:27017/")
-# database
 db = client["iNews"]
-# collection
 
 user_activity = Blueprint('user_activity', __name__)
 
@@ -33,3 +31,22 @@ def add_user_likes(user_id):
     db["news_articles"].update({"_id": news_id}, {"$inc": {"Likes": 1}},
                                True)
     return jsonify(data={"message": "Updated user likes."}), 200
+
+
+@user_activity.route("/user_interest/<objectid:user_id>", methods=["POST"])
+@jwt_required
+def add_user_interest(user_id):
+    if request.is_json:
+        sources = request.json["sources"]
+        category = request.json["category"]
+    else:
+        sources = request.form["sources"]
+        category = request.form["category"]
+    if not sources:
+        return jsonify(data={"message": "Invalid Sources"}), 400
+    db["user_activity"].update({"user_id": user_id},
+                               {"$addToSet": {
+                                   "Category": {"$each" : category},
+                                   "Sources": {"$each" : sources}
+                               }}, True)
+    return jsonify(data={"message": "Updated user Interests."}), 200

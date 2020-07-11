@@ -7,7 +7,7 @@ class Metadata:
                  "Movies": "https://feeds.feedburner.com/ndtvmovies-latest",
                  "Automobiles":
                      "https://feeds.feedburner.com/carandbike-latest",
-                 "Health & Food":
+                 "Health":
                      "https://feeds.feedburner.com/ndtvcooks-latest",
                  "Sports": "https://feeds.feedburner.com/ndtvsports-latest",
                  "Celebrity": "https://feeds.feedburner.com/ndtvnews-people",
@@ -31,7 +31,7 @@ class Metadata:
                                        "/small-biz/startups/rssfeeds/11993050.cms",
                            "Politics": "https://economictimes.indiatimes.com"
                                        "/news/politics-and-nation/rssfeeds/1052732854.cms",
-                           "Science & Space":
+                           "Science":
                                "https://economictimes.indiatimes.com/news/science/rssfeeds/39872847.cms"},
 
         "India TV": {"Lifestyle": "https://www.indiatvnews.com/rssnews"
@@ -52,7 +52,7 @@ class Metadata:
             "World": "https://www.newindianexpress.com/World/rssfeed/?id=171&getXmlFeed=true",
             "Technology": "https://www.newindianexpress.com/Lifestyle/Tech"
                           "/rssfeed/?id=212&getXmlFeed=true",
-            "Health & Food": "https://www.newindianexpress.com/Lifestyle/Health/rssfeed/?id"
+            "Health": "https://www.newindianexpress.com/Lifestyle/Health/rssfeed/?id"
                              "=213&getXmlFeed=true",
         }
     }
