@@ -39,6 +39,7 @@ def datetime_convert(date_string):
 
 
 def parse_economic_times(rss, collection, category=None):
+    print(category)
     resp = requests.get(rss)
     tree = ET.ElementTree(ET.fromstring(resp.content))
     economic_times = list()

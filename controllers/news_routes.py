@@ -51,7 +51,7 @@ def fetch_newsrecommendation(user_id):
         user_categories = db["user_activity"].find_one({"user_id": user_id})
 
         news_articles = db["news_articles"].find(
-            {"category": {"$in": user_categories}}
+            {"category": {"$in": user_categories["Category"]}}
             ).sort(
             'datetime',
             -1).limit(40)
