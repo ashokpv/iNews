@@ -241,6 +241,8 @@ def process():
             parse_cnn(feed_entries, "news_headlines")
         elif 'indiatoday' in rss:
             parse_indiatoday(feed_entries, "news_headlines")
+        elif 'indiatv' in rss:
+            parse_indiatv(feed_entries,"news_headlines")
 
 
 if __name__ == '__main__':

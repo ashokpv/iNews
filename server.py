@@ -67,7 +67,6 @@ def register():
         hashpass = bcrypt.hashpw(password.encode('utf-8'),
                                  bcrypt.gensalt())
 
-        print(hashpass)
         user_info = dict(first_name=first_name, last_name=last_name,
                          email=email, password=hashpass,
                          createtedAt=datetime.now())

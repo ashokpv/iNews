@@ -53,5 +53,10 @@ class Metadata:
                           "/rssfeed/?id=212&getXmlFeed=true",
             "Health": "https://www.newindianexpress.com/Lifestyle/Health/rssfeed/?id"
                              "=213&getXmlFeed=true",
+        },
+        "India Today":{
+            "Sports": "https://www.indiatoday.in/rss/1206550",
+            "Nation": "https://www.indiatoday.in/rss/1206514",
+            "World": "https://www.indiatoday.in/rss/1206577"
         }
     }

@@ -46,7 +46,21 @@ def add_user_interest(user_id):
         return jsonify(data={"message": "Invalid Sources"}), 400
     db["user_activity"].update({"user_id": user_id},
                                {"$addToSet": {
-                                   "Category": {"$each" : category},
-                                   "Sources": {"$each" : sources}
+                                   "Category": {"$each": category},
+                                   "Sources": {"$each": sources}
                                }}, True)
     return jsonify(data={"message": "Updated user Interests."}), 200
+
+
+@user_activity.route("/user_analytics/<objectid:user_id>", methods=["GET"])
+@jwt_required
+def get_user_analytics(user_id):
+    if not user_id:
+        return jsonify(data={"message": "Invalid User"}), 400
+    return_data = {}
+    user_data = db["user_activity"].find_one({"user_id": user_id})
+    for key, value in user_data["news_ids"].items():
+        return_data[key] = len(value)
+    return_data["user_liked_categories"] = user_data.get("Category", [])
+    return_data["user_liked_sources"] = user_data.get("Sources", [])
+    return jsonify(return_data), 200
