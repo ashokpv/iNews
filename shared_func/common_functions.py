@@ -7,4 +7,4 @@ def collection_to_json(cursor=None):
         # json_data = dumps(list_cur, indent=2)
         return list_cur, len(list_cur)
     else:
-        return None, 0
+        return [], 0
