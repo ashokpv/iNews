@@ -30,7 +30,7 @@ def fetch_newsarticles():
     news_articles = db["news_articles"].find({"category": category}
                                              ).sort(
         'datetime',
-        -1).limit(40)
+        -1).limit(60)
     json_data, count = common_functions.collection_to_json(news_articles)
     return jsonify(data=json_data, count=count), 200
 
@@ -46,7 +46,7 @@ def fetch_newsrecommendation(user_id):
             ids = ids + value
         news_articles = db["news_articles"].find({"_id": {"$in": ids}}
                                                  ).sort('datetime',
-                                                        -1).limit(40)
+                                                        -1).limit(60)
     else:
         user_categories = db["user_activity"].find_one({"user_id": user_id})
 
@@ -54,6 +54,6 @@ def fetch_newsrecommendation(user_id):
             {"category": {"$in": user_categories["Category"]}}
             ).sort(
             'datetime',
-            -1).limit(40)
+            -1).limit(60)
     json_data, count = common_functions.collection_to_json(news_articles)
     return jsonify(data=json_data, count=count), 200
