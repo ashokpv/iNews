@@ -52,11 +52,33 @@ class Metadata:
             "Technology": "https://www.newindianexpress.com/Lifestyle/Tech"
                           "/rssfeed/?id=212&getXmlFeed=true",
             "Health": "https://www.newindianexpress.com/Lifestyle/Health/rssfeed/?id"
-                             "=213&getXmlFeed=true",
+                      "=213&getXmlFeed=true",
         },
-        "India Today":{
+        "India Today": {
             "Sports": "https://www.indiatoday.in/rss/1206550",
             "Nation": "https://www.indiatoday.in/rss/1206514",
             "World": "https://www.indiatoday.in/rss/1206577"
+        },
+        "Hindustan Times": {
+            "World": "https://www.hindustantimes.com/rss/world/rssfeed.xml",
+            "Cricket": "https://www.hindustantimes.com/rss/cricket/rssfeed"
+                       ".xml",
+            "Entertainment": "https://www.hindustantimes.com/rss"
+                             "/entertainment/rssfeed.xml ",
+            "Fashion": "https://www.hindustantimes.com/rss/fashion-trends"
+                       "/rssfeed.xml ",
+            "Travel": "https://www.hindustantimes.com/rss/travel/rssfeed.xml",
+            "Technology": "https://www.hindustantimes.com/rss/tech-news"
+                          "/rssfeed.xml",
+            "Nation": "https://www.hindustantimes.com/rss/tech-news/rssfeed"
+                      ".xml",
+            "Sports": "https://www.hindustantimes.com/rss/sports/rssfeed.xml ",
+            "Lifestyle": "https://www.hindustantimes.com/rss/lifestyle"
+                         "/rssfeed.xml ",
+            "Health": "https://www.hindustantimes.com/rss/health-fitness"
+                      "/rssfeed.xml ",
+            "Business": "https://www.hindustantimes.com/rss/business/rssfeed"
+                        ".xml ",
+            "Automobiles": "https://www.hindustantimes.com/rss/auto/rssfeed.xml "
         }
     }

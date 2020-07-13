@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import sys
 import os
+
 sys.path.append(os.path.abspath("/home/AzureUser/iNews/static/"))
 
 # sys.path.append(os.path.abspath("/home/bharath/Desktop/iNews/static/"))
@@ -19,7 +20,8 @@ db = client["iNews"]
 rss_feeds_headlines = ['https://www.indiatoday.in/rss/home',
                        'https://economictimes.indiatimes.com/rssfeedstopstories.cms',
                        'http://rss.cnn.com/rss/edition.rss',
-                       'https://www.indiatvnews.com/rssnews/topstory.xml']
+                       'https://www.indiatvnews.com/rssnews/topstory.xml',
+                       'https://www.hindustantimes.com/rss/topnews/rssfeed.xml']
 limit = 12 * 3600 * 1000
 categories = ["Money", "Technology", "space", "Entertainment", "sport",
               "Motorsport", "Travel", "latest"]
@@ -200,6 +202,41 @@ def parse_indianexpress(rss, collection, category=None):
             print(str(e))
 
 
+def parse_hindustantimes(feed_entries, collection, category=None):
+    ht_list = []
+    for entry in feed_entries:
+
+        data_feed = {"title": entry.title_detail.value,
+                     "link": entry.link,
+                     "images": [],
+                     "source": "Hindustan Times",
+                     "description": entry.summary}
+        try:
+            data_feed["datetime"] = datetime_convert(entry.published)
+        except:
+            data_feed["datetime"] = datetime.utcnow()
+        try:
+            for media in entry.media_content:
+                if media["medium"] == "image":
+                    data_feed["images"].append(media["url"])
+        except:
+            try:
+                for media in entry.media_thumbnail:
+                    data_feed["images"].append(media["url"])
+            except:
+                continue
+        if category:
+            data_feed["category"] = category
+        ht_list.append(data_feed)
+    if ht_list:
+        try:
+            db[collection].insert_many(ht_list, ordered=False)
+        except Exception as e:
+            print(str(e))
+    else:
+        print("empty list CNN in %s", category)
+
+
 def process_category_news():
     for source, value in Metadata.rss_feeds.items():
         for category, rss_feed_link in value.items():
@@ -229,6 +266,11 @@ def process_category_news():
             elif source == 'Indian Express':
                 parse_indianexpress(rss_feed_link, "news_articles",
                                     category=category)
+            elif source == "Hindustan Times":
+                feed = feedparser.parse(rss_feed_link)
+                feed_entries = feed.entries
+                parse_hindustantimes(feed_entries, "news_articles",
+                                     category=category)
 
 
 def process():
@@ -242,7 +284,9 @@ def process():
         elif 'indiatoday' in rss:
             parse_indiatoday(feed_entries, "news_headlines")
         elif 'indiatv' in rss:
-            parse_indiatv(feed_entries,"news_headlines")
+            parse_indiatv(feed_entries, "news_headlines")
+        elif 'hindustantimes' in rss:
+            parse_hindustantimes(feed_entries, "news_headlines")
 
 
 if __name__ == '__main__':
