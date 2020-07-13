@@ -27,7 +27,8 @@ def fetch_headerlines():
 @jwt_required
 def fetch_newsarticles():
     category = request.args.get("category")
-    news_articles = db["news_articles"].find({"category": category}
+    news_articles = db["news_articles"].find({"category": category,
+                                              "images": {"$ne": None}}
                                              ).sort(
         'datetime',
         -1).limit(60)
