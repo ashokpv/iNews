@@ -13,8 +13,7 @@ class Metadata:
                  "Celebrity": "https://feeds.feedburner.com/ndtvnews-people",
                  "Latest": "https://feeds.feedburner.com/ndtvnews-latest"},
 
-        "CNN": {"Money": "http://rss.cnn.com/rss/money_news_international.rss",
-                "Technology": "http://rss.cnn.com/rss/edition_technology.rss",
+        "CNN": {"Technology": "http://rss.cnn.com/rss/edition_technology.rss",
                 "Entertainment": "http://rss.cnn.com/rss/edition_entertainment"
                                  ".rss",
                 "Sports": "http://rss.cnn.com/rss/edition_sport.rss",
@@ -80,5 +79,13 @@ class Metadata:
             "Business": "https://www.hindustantimes.com/rss/business/rssfeed"
                         ".xml ",
             "Automobiles": "https://www.hindustantimes.com/rss/auto/rssfeed.xml "
+        },
+        "Live Mint": {
+            "Money": "https://www.livemint.com/rss/money",
+            "Politcs": "https://www.livemint.com/rss/politics",
+            "Science": "https://www.livemint.com/rss/science",
+            "Sports":"https://www.livemint.com/rss/sports",
+            "Technology": "https://www.livemint.com/rss/technology",
+            "stocks": "https://www.livemint.com/rss/markets"
         }
     }

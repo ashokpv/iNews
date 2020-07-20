@@ -21,7 +21,9 @@ rss_feeds_headlines = ['https://www.indiatoday.in/rss/home',
                        'https://economictimes.indiatimes.com/rssfeedstopstories.cms',
                        'http://rss.cnn.com/rss/edition.rss',
                        'https://www.indiatvnews.com/rssnews/topstory.xml',
-                       'https://www.hindustantimes.com/rss/topnews/rssfeed.xml']
+                       'https://www.hindustantimes.com/rss/topnews/rssfeed'
+                       '.xml',
+                       "https://www.livemint.com/rss/news"]
 limit = 12 * 3600 * 1000
 categories = ["Money", "Technology", "space", "Entertainment", "sport",
               "Motorsport", "Travel", "latest"]
@@ -237,6 +239,31 @@ def parse_hindustantimes(feed_entries, collection, category=None):
         print("empty list CNN in %s", category)
 
 
+def parse_livemint(feed_entries, collection, category=None):
+    lm_list = []
+    for entry in feed_entries:
+
+        data_feed = {"title": entry.title_detail.value,
+                     "link": entry.link,
+                     "images": [entry.smallimage],
+                     "source": "Live Mint",
+                     "description": entry.summary}
+        try:
+            data_feed["datetime"] = datetime_convert(entry.published)
+        except:
+            data_feed["datetime"] = datetime.utcnow()
+        if category:
+            data_feed["category"] = category
+        lm_list.append(data_feed)
+    if lm_list:
+        try:
+            db[collection].insert_many(lm_list, ordered=False)
+        except Exception as e:
+            print(str(e))
+    else:
+        print("empty list Live mint in %s", category)
+
+
 def process_category_news():
     for source, value in Metadata.rss_feeds.items():
         for category, rss_feed_link in value.items():
@@ -271,6 +298,11 @@ def process_category_news():
                 feed_entries = feed.entries
                 parse_hindustantimes(feed_entries, "news_articles",
                                      category=category)
+            elif source == "Live Mint":
+                feed = feedparser.parse(rss_feed_link)
+                feed_entries = feed.entries
+                parse_livemint(feed_entries, "news_articles",
+                               category=category)
 
 
 def process():
@@ -287,6 +319,8 @@ def process():
             parse_indiatv(feed_entries, "news_headlines")
         elif 'hindustantimes' in rss:
             parse_hindustantimes(feed_entries, "news_headlines")
+        elif 'livemint' in rss:
+            parse_livemint(feed_entries, "news_headlines")
 
 
 if __name__ == '__main__':
