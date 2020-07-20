@@ -18,7 +18,7 @@ news_routes = Blueprint('news_routes', __name__)
 def fetch_headerlines():
     news_headlines = db["news_headlines"].find({}).sort(
         'datetime',
-        -1).limit(40)
+        -1).limit(100)
     json_data, count = common_functions.collection_to_json(news_headlines)
     return jsonify(data=json_data, count=count), 200
 
@@ -31,7 +31,7 @@ def fetch_newsarticles():
                                               "images": {"$ne": None}}
                                              ).sort(
         'datetime',
-        -1).limit(60)
+        -1).limit(100)
     json_data, count = common_functions.collection_to_json(news_articles)
     return jsonify(data=json_data, count=count), 200
 
@@ -55,6 +55,6 @@ def fetch_newsrecommendation(user_id):
             {"category": {"$in": user_categories["Category"]}}
             ).sort(
             'datetime',
-            -1).limit(60)
+            -1).limit(100)
     json_data, count = common_functions.collection_to_json(news_articles)
     return jsonify(data=json_data, count=count), 200

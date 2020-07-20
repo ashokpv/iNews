@@ -1,0 +1,12 @@
+CREATE INDEXES : 
+
+1. db.getCollection('news_articles').createIndex({'title':1}, {"unique": true})
+
+2. db.getCollection('news_articles').createIndex({'guid':1}, {"sparse":true,"unique": true})
+3.db.getCollection('news_articles').createIndex({'title':"text"})
+
+4.db.getCollection('User').createIndex({'email':1}, {"unique": true})
+
+5. db.getCollection('news_headlines').createIndex({'title':1}, {"unique": true})
+
+6.db.getCollection('news_headlines').createIndex({'guid':1}, {"sparse":true,"unique": true})
