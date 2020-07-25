@@ -23,17 +23,39 @@ def fetch_headerlines():
     return jsonify(data=json_data, count=count), 200
 
 
-@news_routes.route("/fetch_newsarticles", methods=['GET'])
+@news_routes.route("/fetch_newsarticles/<objectid:user_id>", methods=['GET'])
 @jwt_required
-def fetch_newsarticles():
+def fetch_newsarticles(user_id):
     category = request.args.get("category")
     news_articles = db["news_articles"].find({"category": category,
                                               "images": {"$ne": None}}
                                              ).sort(
         'datetime',
         -1).limit(100)
+    user_likes = db["user_activity"].aggregate([
+        {"$match": {"user_id": user_id}},
+        {"$addFields": {
+            "news_ids": {
+                "$map": {
+                    "input": {"$objectToArray": "$news_ids"},
+                    "as": "el",
+                    "in": "$$el.v"
+                }
+            }}
+        },
+        {"$project": {
+            "user_id": 1,
+            "news_ids": {"$reduce": {
+                "input": '$news_ids',
+                "initialValue": [],
+                "in": {"$concatArrays": ['$$value', '$$this']}
+            }}
+        }}
+    ])
+    user_like_data = common_functions.aggregate_to_json(user_likes,
+                                                        attribute="news_ids")
     json_data, count = common_functions.collection_to_json(news_articles)
-    return jsonify(data=json_data, count=count), 200
+    return jsonify(data=json_data, count=count, user_likes=user_like_data), 200
 
 
 @news_routes.route("/fetch_newsrecommendation/<objectid:user_id>", methods=[
@@ -53,7 +75,7 @@ def fetch_newsrecommendation(user_id):
 
         news_articles = db["news_articles"].find(
             {"category": {"$in": user_categories["Category"]}}
-            ).sort(
+        ).sort(
             'datetime',
             -1).limit(100)
     json_data, count = common_functions.collection_to_json(news_articles)

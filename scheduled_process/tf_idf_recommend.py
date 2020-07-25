@@ -34,7 +34,7 @@ categories = [
 ]
 client = MongoClient("mongodb://localhost:27017/")
 db = client["iNews"]
-fetch_news_date = datetime.utcnow() - timedelta(days=10)
+fetch_news_date = datetime.utcnow() - timedelta(days=1)
 
 
 class Recommend_Based_on_Likes():
@@ -49,6 +49,8 @@ class Recommend_Based_on_Likes():
                 final_recommendation_ids = list()
                 for id in news_ids:
                     news_title = db["news_articles"].find_one({"_id": id})
+                    if not news_title:
+                        continue
                     print("Fetching for title", news_title["title"])
                     news_articles_temp, news_articles_latest = \
                         self.combine_title_with_datafram(

@@ -8,3 +8,13 @@ def collection_to_json(cursor=None):
         return list_cur, len(list_cur)
     else:
         return [], 0
+
+
+def aggregate_to_json(cursor=None, attribute=None):
+    if cursor:
+        result = list(cursor)[0]
+        if attribute:
+            result= result[attribute]
+        return result
+    else:
+        return []

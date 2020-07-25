@@ -10,3 +10,5 @@ CREATE INDEXES :
 5. db.getCollection('news_headlines').createIndex({'title':1}, {"unique": true})
 
 6.db.getCollection('news_headlines').createIndex({'guid':1}, {"sparse":true,"unique": true})
+
+7. db.getCollection('news_articles').createIndex({'link':1}, {"unique": true})

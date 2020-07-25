@@ -88,7 +88,7 @@ def login():
         return jsonify(message="Invalid Username or Password"), 401
     if bcrypt.hashpw(password.encode('utf-8'),
                      test['password']) == test['password'] and test:
-        expires = timedelta(days=1)
+        expires = timedelta(days=7)
         access_token = create_access_token(identity=email,expires_delta=expires)
         return jsonify(message="Login Succeeded!",
                        username=test["first_name"],
