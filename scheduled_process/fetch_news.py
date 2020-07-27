@@ -10,6 +10,8 @@ from datetime import datetime
 import sys
 import os
 
+parser = HTMLParser()
+
 sys.path.append(os.path.abspath("/home/AzureUser/iNews/static/"))
 
 # sys.path.append(os.path.abspath("/home/bharath/Desktop/iNews/static/"))
@@ -74,7 +76,8 @@ def parse_indiatoday(feed_entries, collection, category=None):
     indiatoday_news_list = list()
 
     for entry in feed_entries:
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "images": get_images(entry.description),
                      "datetime": datetime_convert(entry.published),
@@ -94,7 +97,8 @@ def parse_cnn(feed_entries, collection, category=None):
     cnn_news_list = []
     for entry in feed_entries:
 
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "images": [],
                      "source": "CNN"}
@@ -127,7 +131,8 @@ def parse_cnn(feed_entries, collection, category=None):
 def parse_ndtv(feed_entries, collection, category=None):
     ndtv_news_list = []
     for entry in feed_entries:
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "description": entry.summary,
                      "images": [entry.storyimage],
@@ -151,7 +156,8 @@ def parse_indiatv(feed_entries, collection, category=None):
     indiatv = []
 
     for entry in feed_entries:
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "description": entry.summary,
                      "images": get_images(entry.description),
@@ -169,7 +175,6 @@ def parse_indiatv(feed_entries, collection, category=None):
 
 def parse_indianexpress(rss, collection, category=None):
     indianexpress = []
-    parser = HTMLParser()
     resp = requests.get(rss, headers={
         'User-Agent': 'My User Agent 1.0',
     })
@@ -208,7 +213,8 @@ def parse_hindustantimes(feed_entries, collection, category=None):
     ht_list = []
     for entry in feed_entries:
 
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "images": [],
                      "source": "Hindustan Times",
@@ -243,7 +249,8 @@ def parse_livemint(feed_entries, collection, category=None):
     lm_list = []
     for entry in feed_entries:
 
-        data_feed = {"title": entry.title_detail.value,
+        data_feed = {"title": BeautifulSoup(entry.title_detail.value,
+                                            "html.parser").text,
                      "link": entry.link,
                      "images": [entry.smallimage],
                      "source": "Live Mint",
