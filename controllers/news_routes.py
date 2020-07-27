@@ -72,11 +72,17 @@ def fetch_newsrecommendation(user_id):
                                                         -1).limit(60)
     else:
         user_categories = db["user_activity"].find_one({"user_id": user_id})
-
-        news_articles = db["news_articles"].find(
-            {"category": {"$in": user_categories["Category"]}}
-        ).sort(
-            'datetime',
-            -1).limit(100)
+        if user_categories.get("Category", ""):
+            news_articles = db["news_articles"].find(
+                {"category": {"$in": user_categories["Category"]}}
+            ).sort(
+                'datetime',
+                -1).limit(100)
+        else:
+            news_articles = db["news_articles"].find(
+                {"images": {"$ne": None}}
+            ).sort(
+                'datetime',
+                -1).limit(100)
     json_data, count = common_functions.collection_to_json(news_articles)
     return jsonify(data=json_data, count=count), 200
