@@ -11,10 +11,12 @@ def collection_to_json(cursor=None):
 
 
 def aggregate_to_json(cursor=None, attribute=None):
-    if list(cursor):
-        result = list(cursor)
-        if result and  attribute:
-            result= result[0][attribute]
-        return result
+    result = list(cursor)
+    if result and attribute:
+        result = result[0][attribute]
+        if result:
+            return result
+        else:
+            return []
     else:
         return []

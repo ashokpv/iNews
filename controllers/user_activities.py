@@ -84,8 +84,19 @@ def get_user_analytics(user_id):
     user_data = db["user_activity"].find_one({"user_id": user_id})
     # for key, value in user_data["news_ids"].items():
     #     return_data[key] = float(len(value))
-    return_data["user_liked_categories"] = user_data.get("Category", [])
-    return_data["user_liked_sources"] = user_data.get("Sources", [])
+    if user_data:
+        return_data["user_liked_categories"] = user_data.get("Category", [])
+        return_data["user_liked_sources"] = user_data.get("Sources", [])
+    else:
+        return_data["user_liked_categories"] = ["Oops you didnt like any "
+                                                "categories!!. Please "
+                                                "Re-Login to select your "
+                                                "favourite categories."]
+        return_data["user_liked_sources"] = ["Oh no! Seems Like you didnt "
+                                             "select "
+                                             "any Sources!!..Please  "
+                                                "Re-Login to select your "
+                                                "favourite Sources"]
     return jsonify(return_data), 200
 
 
